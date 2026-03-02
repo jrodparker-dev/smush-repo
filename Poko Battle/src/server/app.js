@@ -12,10 +12,19 @@ function json(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function notFound(res) {
+  return json(res, 404, {error: 'Not found'});
+}
+
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
-    req.on('data', (chunk) => (raw += chunk));
+    req.on('data', (chunk) => {
+      raw += chunk;
+      if (raw.length > 1_000_000) {
+        reject(new Error('Request body too large'));
+      }
+    });
     req.on('end', () => {
       if (!raw) return resolve({});
       try {
@@ -29,38 +38,20 @@ function readJsonBody(req) {
 }
 
 const server = http.createServer(async (req, res) => {
-  if (req.method === 'GET' && req.url === '/health') return json(res, 200, {ok: true});
-
-  if (req.method === 'GET' && req.url === '/api/teams') return json(res, 200, teams.list());
-
-  if (req.method === 'GET' && req.url?.startsWith('/api/teams/')) {
-    const id = req.url.split('/')[3];
-    const team = teams.get(id);
-    return team ? json(res, 200, team) : json(res, 404, {error: 'Team not found'});
-  }
-
-  if (req.method === 'POST' && req.url === '/api/teams') {
-    const body = await readJsonBody(req).catch((e) => json(res, 400, {error: e.message}));
-    if (!body || res.writableEnded) return;
-
-    const result = await teams.save({...body, id: randomUUID()});
-    if (!result.ok) return json(res, 400, {errors: result.errors});
-    return json(res, 201, result.team);
+  if (req.method === 'GET' && req.url === '/health') {
+    return json(res, 200, {ok: true, service: 'poko-battle'});
   }
 
   if (req.method === 'POST' && req.url === '/battle/create') {
-    const body = await readJsonBody(req).catch((e) => json(res, 400, {error: e.message}));
+    const body = await readJsonBody(req).catch((error) => json(res, 400, {error: error.message}));
     if (!body || res.writableEnded) return;
 
-    const p1Team = teams.get(body.p1TeamId);
-    const p2Team = teams.get(body.p2TeamId);
-    if (!p1Team || !p2Team) return json(res, 400, {error: 'Both p1TeamId and p2TeamId are required'});
-
+    const battleId = `pb-${randomUUID()}`;
     const battle = engine.createBattle({
-      battleId: `pb-${randomUUID()}`,
-      format: 'gen9customgame',
-      p1: {id: 'p1', name: body.p1Name || 'Player 1', team: p1Team},
-      p2: {id: 'p2', name: body.p2Name || 'Player 2', team: p2Team},
+      battleId,
+      format: body.format || 'gen9ou',
+      p1: body.p1 || {id: 'p1', name: 'Player 1'},
+      p2: body.p2 || {id: 'p2', name: 'Player 2'},
     });
     return json(res, 201, battle);
   }
@@ -80,12 +71,15 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url?.startsWith('/battle/')) {
     const battleId = req.url.split('/')[2];
-    const battle = engine.getSnapshot(battleId);
-    return battle ? json(res, 200, battle) : json(res, 404, {error: 'Battle not found'});
+    const snapshot = engine.getSnapshot(battleId);
+    if (!snapshot) return json(res, 404, {error: `Unknown battle: ${battleId}`});
+    return json(res, 200, snapshot);
   }
 
-  return json(res, 404, {error: 'Not found'});
+  return notFound(res);
 });
 
 const port = Number(process.env.PORT || 4080);
-server.listen(port, () => console.log(`Poko API on http://localhost:${port}`));
+server.listen(port, () => {
+  console.log(`Poko Battle API listening on http://localhost:${port}`);
+});

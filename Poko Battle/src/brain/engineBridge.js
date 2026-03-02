@@ -11,6 +11,12 @@ function createBattleProcess() {
   });
   return proc;
 }
+/**
+ * Adapter boundary between Poko Battle and a simulator engine.
+ *
+ * Phase 1 target: Pokemon Showdown simulator.
+ * Later: swap/extend with custom simulation if desired.
+ */
 
 export class EngineBridge {
   constructor({logger = console} = {}) {

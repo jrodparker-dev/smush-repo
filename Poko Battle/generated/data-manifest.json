@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-03-02T18:56:05.918Z",
+  "officialDataDir": "../pokemon-showdown/data",
+  "customDataDir": "../DH2/data",
+  "summary": {
+    "tracked": 11,
+    "inSync": 0,
+    "overrides": 11,
+    "officialOnly": 0,
+    "missingOfficial": 0
+  },
+  "files": [
+    {
+      "file": "pokedex.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "c620fa62024b2127b06fd469a4c5254428a5eaaa5f80827073e72584bee2d51c",
+      "customHash": "dc150353ad07b4daf2642356c33ef869745a86bccf96a93766e2f74713f53e9a",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/pokedex.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/pokedex.ts"
+    },
+    {
+      "file": "moves.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "58cf016b49bfb0c21f901544e2c30940b57e413339b88d8a8207949917001bac",
+      "customHash": "0eeabec96ba0128d149b5ca9928eca6d17ec8b0688cb9bc067a4dd44d1099694",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/moves.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/moves.ts"
+    },
+    {
+      "file": "abilities.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "2f974a1db3817fe4988c5e4010bd5b0c06bc20658f50dd48b5a397f9cff1d586",
+      "customHash": "e812e02885140d8e3a64eb1e5f7e3f51916ded91f6327c401a5501437db22e20",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/abilities.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/abilities.ts"
+    },
+    {
+      "file": "items.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "46c0a6b442cc9abbfbc723b52a0b059548d488fa37ab7da0f23936771667a09a",
+      "customHash": "6af9012dd1a58fef516e23a8cd04ce97ff959b07bb89f778e65783bcecc71915",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/items.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/items.ts"
+    },
+    {
+      "file": "learnsets.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "b581d8c090007bb5e5ed3a095670eba724ad1977d567404c3b3f9fcef78fb60a",
+      "customHash": "286bf31584e0508a60394d12b13af9be159d96c5ae4e1014495c868d66231dd2",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/learnsets.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/learnsets.ts"
+    },
+    {
+      "file": "formats-data.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "2dba3b9784442db56e67f0beb1f6bafc6bb8487ad70d40a8a2d477b19e9ab7fd",
+      "customHash": "e001e61580fb30a7a1d6f5dfd79579fd1b933a3b2c140049e4ea7783890ab9c6",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/formats-data.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/formats-data.ts"
+    },
+    {
+      "file": "scripts.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "3819fa8cc96f44c5cc18c1930a3705ac0a7f38c9c623b85c32410efa13e26d45",
+      "customHash": "54c7522b3d5d05f6a020d78b129589e7b2e57fbb9d095800c78c33a64a8ff383",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/scripts.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/scripts.ts"
+    },
+    {
+      "file": "typechart.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "000a0ffca024ea7e3b87787a791c1e55b5e3783c3bb0b72853003034a3efc52d",
+      "customHash": "73c80345e2ed962c7b4c307127e506302c9cde9ca620d80829e72624616887cc",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/typechart.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/typechart.ts"
+    },
+    {
+      "file": "conditions.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "02e014fc0738feafbd59bde33096e1055d5b88ce0eea0e3921ac0e5f63e2fcdf",
+      "customHash": "621f6ba0df6906c5c44ce14495139c3e250d71e7fadf643a0593d95575f21bcf",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/conditions.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/conditions.ts"
+    },
+    {
+      "file": "rulesets.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "a9193b0b26cc8343dafd0238d1a68ac66038cf9ce350b77b9937c4f652bc26b8",
+      "customHash": "29b6e32914ed70e45fc9e3a16d5b4414cc03e31b6898585305a36ddb193ce96a",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/rulesets.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/rulesets.ts"
+    },
+    {
+      "file": "aliases.ts",
+      "status": "custom-overrides-official",
+      "officialHash": "2a7ef6b06de9dd3d10f749fe954231e7979ddecf5d51acd860556824b76f8c08",
+      "customHash": "0191399b9b3d34cc9ab79469e352587504f36f14907231f958cfacbf3e307c11",
+      "officialPath": "/workspace/smush-repo/pokemon-showdown/data/aliases.ts",
+      "customPath": "/workspace/smush-repo/DH2/data/aliases.ts"
+    }
+  ]
+}

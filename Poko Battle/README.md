@@ -1,82 +1,115 @@
 # Poko Battle
 
-Poko Battle is a fresh, standalone battle-simulator framework that keeps **Pokemon Showdown's modern engine/data** while giving you a clean surface to build your own web + mobile experience.
+Poko Battle is now set up as a **real next-step platform** around Pokémon Showdown:
 
-## Current status (important)
+- A local API (`:4080`) for team builder + match orchestration.
+- A full Showdown server (`:8000`) for battle/websocket ecosystem.
+- A simulator bridge that uses `pokemon-showdown simulate-battle` for actual battle engine behavior.
 
-**Not yet a fully playable simulator.**
+## What you can run now
 
-Right now this project is a backend skeleton with a mocked in-memory battle flow (`EngineBridge`) so you can test battle lifecycle APIs before wiring in the full Pokemon Showdown simulator internals.
-
-What works now:
-- Create a battle room/session.
-- Submit action payloads.
-- Retrieve battle snapshots.
-- Track official-vs-custom data divergence with a manifest.
-
-What does **not** work yet:
-- Full battle rules resolution (damage, turn order, abilities, statuses, etc).
-- Team validation/parsing, ladder, chat, replays, or full client protocol parity.
-
-## Why this structure
-
-You currently run `dh2-client` against `pokemon-showdown` server files. This design separates concerns so you can evolve toward a new product:
-
-1. Keep Showdown battle correctness by using Showdown data as the source of truth.
-2. Layer your custom changes on top as deterministic overrides.
-3. Decouple your front-end from legacy PS client assumptions.
-
-## Quick start
+From repo root, either command works:
 
 ```bash
-cd "Poko Battle"
-npm run data:manifest
-npm test
-npm start
+npm --prefix "Poko Battle" run dev
 ```
 
-Server runs on `http://localhost:4080` by default.
+or:
 
-## How to test it right now
-
-### Option A: one-command smoke test (recommended)
-
-In terminal 1:
 ```bash
-cd "Poko Battle"
-npm start
+node "Poko Battle"
 ```
 
-In terminal 2:
-```bash
-cd "Poko Battle"
-npm run smoke:test
+This starts:
+- Poko API on `http://localhost:4080`
+- Showdown server on `http://localhost:8000`
+
+## Team Builder API (full 6-mon structure)
+
+`POST /api/teams`
+
+Supports all requested per-Pokémon fields:
+- species
+- moves (1-4)
+- ability
+- item
+- EVs
+- IVs
+- nature
+- teraType
+- shiny
+- happiness
+- level
+- gender
+
+Example payload:
+
+```json
+{
+  "name": "My Team",
+  "pokemon": [
+    {
+      "species": "Pikachu",
+      "item": "Light Ball",
+      "ability": "Static",
+      "moves": ["Thunderbolt", "Volt Tackle", "Grass Knot", "Protect"],
+      "evs": {"hp": 4, "spa": 252, "spe": 252},
+      "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 31},
+      "nature": "Timid",
+      "teraType": "Electric",
+      "shiny": false,
+      "happiness": 255,
+      "level": 100,
+      "gender": "M"
+    }
+  ]
+}
 ```
 
-### Option B: manual curl flow
+The API also packs and validates teams against `gen9customgame` (one permissive format where everything is legal).
 
-Create battle:
-```bash
-curl -s -X POST http://localhost:4080/battle/create \
-  -H 'Content-Type: application/json' \
-  -d '{"format":"gen9ou","p1":{"id":"p1","name":"Ash"},"p2":{"id":"p2","name":"Gary"}}'
+## Battle API
+
+Create battle from stored teams:
+
+`POST /battle/create`
+
+```json
+{
+  "p1TeamId": "<team-id>",
+  "p2TeamId": "<team-id>",
+  "p1Name": "Ash",
+  "p2Name": "Gary"
+}
 ```
 
 Submit action:
-```bash
-curl -s -X POST http://localhost:4080/battle/<BATTLE_ID>/action \
-  -H 'Content-Type: application/json' \
-  -d '{"actor":"p1","action":{"type":"move","move":"thunderbolt"}}'
+
+`POST /battle/:id/action`
+
+```json
+{
+  "actor": "p1",
+  "action": {"choice": "move 1"}
+}
 ```
 
-Get snapshot:
+Read battle snapshot:
+
+`GET /battle/:id`
+
+## Quick verification
+
+Start dev stack, then run:
+
 ```bash
-curl -s http://localhost:4080/battle/<BATTLE_ID>
+npm --prefix "Poko Battle" run smoke:test
 ```
 
-## Initial roadmap
+## Mobile-app pipeline direction
 
-- Wire `EngineBridge` into live Pokemon Showdown battle creation.
-- Replace in-memory room storage with Redis/Postgres.
-- Add auth + account system.
-- Stand up a dedicated React/React Native front-end over `shared/protocol.js`.
+This repo layout is ready for the next stage:
+1. Keep this API as the canonical backend for auth/team/match state.
+2. Build React Native app that talks to `:4080` for team builder and match lifecycle.
+3. Add websocket gateway in Poko API for real-time battle updates.
+4. Deploy API + Showdown with shared account service so mobile players can match each other.

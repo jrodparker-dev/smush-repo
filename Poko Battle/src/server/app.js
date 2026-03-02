@@ -2,8 +2,10 @@ import http from 'node:http';
 import {randomUUID} from 'node:crypto';
 
 import {EngineBridge} from '../brain/engineBridge.js';
+import {TeamBuilderService} from './teamBuilder.js';
 
 const engine = new EngineBridge();
+const teams = new TeamBuilderService();
 
 function json(res, statusCode, payload) {
   res.writeHead(statusCode, {'Content-Type': 'application/json'});
@@ -56,16 +58,12 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === 'POST' && req.url?.startsWith('/battle/') && req.url.endsWith('/action')) {
     const battleId = req.url.split('/')[2];
-    const body = await readJsonBody(req).catch((error) => json(res, 400, {error: error.message}));
+    const body = await readJsonBody(req).catch((e) => json(res, 400, {error: e.message}));
     if (!body || res.writableEnded) return;
 
     try {
-      const result = engine.applyAction({
-        battleId,
-        actor: body.actor || 'p1',
-        action: body.action || {type: 'move', move: 'tackle'},
-      });
-      return json(res, 200, result);
+      const update = engine.applyAction({battleId, actor: body.actor, action: body.action});
+      return json(res, 200, update);
     } catch (error) {
       return json(res, 404, {error: error.message});
     }

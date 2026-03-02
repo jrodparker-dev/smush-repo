@@ -8,6 +8,8 @@
     "data:manifest": "node scripts/build-data-manifest.mjs",
     "start": "node src/server/app.js",
     "test": "node --test tests/*.test.js",
-    "smoke:test": "node scripts/smoke-test.mjs"
-  }
+    "smoke:test": "node scripts/smoke-test.mjs",
+    "dev": "node scripts/dev.mjs"
+  },
+  "main": "index.js"
 }

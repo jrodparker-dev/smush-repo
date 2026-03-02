@@ -1,0 +1,43 @@
+name: Sprite Updates to Discord
+
+on:
+  push:
+    paths:
+      - 'sprites/gen5/**'
+      - 'sprites/gen5-shiny/**'
+      - 'sprites/gen5-back/**'
+      - 'sprites/gen5-back-shiny/**'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # need last two commits for diff
+
+      - name: Collect changed files
+        id: changes
+        run: |
+          # Get all changed files in the relevant folders
+          echo "CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^(sprites/gen5|sprites/gen5-shiny|sprites/gen5-back|sprites/gen5-back-shiny)/' || true)" >> $GITHUB_ENV
+          echo "ADDED=$(git diff --name-only --diff-filter=A ${{ github.event.before }} ${{ github.sha }} | grep -E '^(sprites/gen5|sprites/gen5-shiny|sprites/gen5-back|sprites/gen5-back-shiny)/' || true)" >> $GITHUB_ENV
+          echo "Detected changes:"
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+
+      - name: Send each file to Discord
+        if: env.CHANGED != ''
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          for file in $CHANGED; do
+            if echo "$ADDED" | grep -q "^$file$"; then
+              EMOJI="🆕"
+            else
+              EMOJI="✏️"
+            fi
+            curl -H "Content-Type: application/json" \
+              -d "{\"content\": \"$EMOJI [Sprite updated: $file](${{ github.event.head_commit.url }})\"}" \
+              $DISCORD_WEBHOOK
+          done

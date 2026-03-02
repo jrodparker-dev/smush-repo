@@ -1,27 +1,59 @@
 import {spawn} from 'node:child_process';
 import path from 'node:path';
+import {existsSync} from 'node:fs';
 
 const repoRoot = path.resolve(process.cwd(), '..');
-const showdownBin = path.join(repoRoot, process.env.SHOWDOWN_ROOT || 'DH2', 'pokemon-showdown');
+
+function resolveShowdownRoot() {
+  if (process.env.SHOWDOWN_ROOT) return process.env.SHOWDOWN_ROOT;
+  const candidates = ['DH2', 'pokemon-showdown'];
+  for (const candidate of candidates) {
+    const root = path.join(repoRoot, candidate);
+    if (existsSync(path.join(root, 'pokemon-showdown')) && existsSync(path.join(root, 'config', 'config-example.js'))) {
+      return candidate;
+    }
+  }
+  return 'pokemon-showdown';
+}
+
+const showdownRoot = path.join(repoRoot, resolveShowdownRoot());
+const showdownBin = path.join(showdownRoot, 'pokemon-showdown');
 
 function createBattleProcess() {
-  const proc = spawn('node', [showdownBin, 'simulate-battle'], {
-    cwd: path.join(repoRoot, process.env.SHOWDOWN_ROOT || 'DH2'),
+  return spawn('node', [showdownBin, 'simulate-battle'], {
+    cwd: showdownRoot,
     stdio: ['pipe', 'pipe', 'pipe'],
   });
-  return proc;
 }
-/**
- * Adapter boundary between Poko Battle and a simulator engine.
- *
- * Phase 1 target: Pokemon Showdown simulator.
- * Later: swap/extend with custom simulation if desired.
- */
 
 export class EngineBridge {
   constructor({logger = console} = {}) {
     this.logger = logger;
     this.battles = new Map();
+  }
+
+  async checkReady() {
+    if (!existsSync(showdownRoot)) return {ok: false, error: `Showdown root missing: ${showdownRoot}`};
+    if (!existsSync(showdownBin)) return {ok: false, error: `Showdown binary missing: ${showdownBin}`};
+
+    return new Promise((resolve) => {
+      const proc = createBattleProcess();
+      const timeout = setTimeout(() => {
+        proc.kill('SIGTERM');
+        resolve({ok: true});
+      }, 800);
+
+      proc.once('error', (error) => {
+        clearTimeout(timeout);
+        resolve({ok: false, error: error.message});
+      });
+
+      proc.once('spawn', () => {
+        clearTimeout(timeout);
+        proc.kill('SIGTERM');
+        resolve({ok: true});
+      });
+    });
   }
 
   createBattle({battleId, format, p1, p2}) {

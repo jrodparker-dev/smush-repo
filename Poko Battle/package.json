@@ -1,0 +1,13 @@
+{
+  "name": "poko-battle",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework scaffold for a new Showdown-like battle simulator.",
+  "scripts": {
+    "data:manifest": "node scripts/build-data-manifest.mjs",
+    "start": "node src/server/app.js",
+    "test": "node --test tests/*.test.js",
+    "smoke:test": "node scripts/smoke-test.mjs"
+  }
+}

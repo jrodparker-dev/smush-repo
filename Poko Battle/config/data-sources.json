@@ -1,0 +1,17 @@
+{
+  "officialDataDir": "../pokemon-showdown/data",
+  "customDataDir": "../DH2/data",
+  "trackedFiles": [
+    "pokedex.ts",
+    "moves.ts",
+    "abilities.ts",
+    "items.ts",
+    "learnsets.ts",
+    "formats-data.ts",
+    "scripts.ts",
+    "typechart.ts",
+    "conditions.ts",
+    "rulesets.ts",
+    "aliases.ts"
+  ]
+}

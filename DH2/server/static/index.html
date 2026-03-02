@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<script>
-var suffix = (document.location.port != '8000' ? '-' + (document.location.port || '80') : '');
-var port = location.hostname === 'localhost' ? "?port=" + document.location.port : "";
-document.location.replace(
-	'http://' + document.location.hostname + suffix + '.psim.us' + document.location.pathname + port
-);
-</script>
-<p>This is a <a href="http://www.pokemonshowdown.com">Pok&eacute;mon Showdown</a> server!</p>
-<noscript><p>Try enabling <a href="http://enable-javascript.com/en/">JavaScript</a> to play!</p></noscript>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Local Pokémon Showdown Server</title>
+	<style>
+		body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; line-height: 1.5; padding: 0 1rem; }
+	</style>
+</head>
+<body>
+	<h1>Local Pokémon Showdown server</h1>
+	<p>This server is running locally. No automatic redirect is performed.</p>
+	<ul>
+		<li><a href="http://localhost:4080/health">API health</a></li>
+		<li><a href="http://localhost:4080/smoke">Smoke test status</a></li>
+		<li><a href="https://play.pokemonshowdown.com/?server=localhost:8000">Connect using official client</a></li>
+	</ul>
+</body>
+</html>

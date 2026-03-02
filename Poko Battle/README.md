@@ -113,3 +113,38 @@ This repo layout is ready for the next stage:
 2. Build React Native app that talks to `:4080` for team builder and match lifecycle.
 3. Add websocket gateway in Poko API for real-time battle updates.
 4. Deploy API + Showdown with shared account service so mobile players can match each other.
+
+## ChatGPT handoff (truncated context)
+
+Use this short section when pasting into regular ChatGPT for implementation help.
+
+### What this project is
+
+- `Poko Battle` is a Node.js backend project that wraps Pokémon Showdown tools.
+- It runs:
+  - a local API on `http://localhost:4080`
+  - a Showdown server on `http://localhost:8000`
+- It already has endpoints for:
+  - creating teams (`POST /api/teams`)
+  - creating battles (`POST /battle/create`)
+  - sending actions (`POST /battle/:id/action`)
+  - reading snapshots (`GET /battle/:id`)
+
+### Current goals
+
+- Make the local dev stack boot reliably on a new machine.
+- Keep team creation and validation stable for Gen 9 formats.
+- Bridge battle actions and state cleanly so a future mobile UI can drive battles.
+
+### Next steps to ask ChatGPT about
+
+1. Give me an exact, step-by-step startup checklist (Node version, install commands, required config files, run commands).
+2. Diagnose why `smoke:test` cannot connect when API/Showdown are not fully started, and suggest guardrails (health checks/retries).
+3. Add a `preflight` script that verifies required files, ports, and binaries before `npm run dev`.
+4. Propose a minimal "first playable loop" test plan (create team -> create battle -> submit action -> fetch snapshot).
+5. Suggest the cleanest way to expose battle updates to a React Native client (polling first, websocket second).
+
+### Known blockers to mention
+
+- Some scripts assume local Showdown build/config artifacts already exist.
+- `smoke:test` expects the API to already be live at `:4080`.
